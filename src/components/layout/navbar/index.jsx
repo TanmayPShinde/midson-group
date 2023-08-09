@@ -1,11 +1,15 @@
-// import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import NavItem from "./NavItem";
+
+const navItems = [
+  { name: "Home", path: "/" },
+  { name: "New Customer", path: "/createCustomer" },
+  { name: "New Group", path: "/createGroup" },
+];
 
 const Navbar = () => {
-  // const { cartItems } = useSelector((state) => state.cart);
-
   return (
-    <nav className="bg-gray-700 fixed top-0 w-full z-10 shadow-xl">
+    <nav className="bg-slate-700 fixed top-0 w-full z-10 shadow-xl">
       <div className="lg:mx-14 md:mx-12 sm:mx-8 mx-2 max-w-7xl">
         <div className="relative flex h-14 items-center justify-between">
           <Link to="/">
@@ -14,16 +18,9 @@ const Navbar = () => {
             </h1>
           </Link>
           <div>
-            <Link to="/">
-              <span className="text-sm p-2 text-white rounded-md hover:bg-slate-600 me-2">
-                Home
-              </span>
-            </Link>
-            <Link to="/createCustomer">
-              <sapn className="text-sm p-2 text-white rounded-md hover:bg-slate-600">
-                Add Customer
-              </sapn>
-            </Link>
+            {navItems.map((navItem, index) => (
+              <NavItem key={index} name={navItem.name} path={navItem.path} />
+            ))}
           </div>
         </div>
       </div>
