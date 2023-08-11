@@ -6,11 +6,13 @@ import { toast } from "react-toastify";
 
 import PrimaryButton from "../../components/shared/PrimaryButton";
 import { db } from "../../app/firebase";
+import InputField from "../../components/form/InputField";
 
 const CreateCustomer = () => {
   const [data, setData] = useState({
     name: "",
     email: "",
+    phone: "",
     referredBy: "",
   });
   const [showDropdown, setShowDropdown] = useState(false);
@@ -31,8 +33,9 @@ const CreateCustomer = () => {
     setLoading(true);
 
     const newCustomer = {
-      name: data.name.trim(),
-      email: data.email.trim(),
+      name: data.name?.trim(),
+      email: data.email?.trim(),
+      phone: data.phone?.trim(),
       referredBy: data.referredBy,
     };
     try {
@@ -48,11 +51,16 @@ const CreateCustomer = () => {
         setData({
           name: "",
           email: "",
+          phone: "",
           referredBy: "",
         });
       } else {
         console.log("Email already exists");
         toast.error("Email already exists!");
+        setData({
+          ...data,
+          email: "",
+        });
       }
       setLoading(false);
     } catch (error) {
@@ -63,62 +71,52 @@ const CreateCustomer = () => {
   };
 
   return (
-    <div className="mt-20 p-3 max-w-lg mx-auto bg-white rounded-md drop-shadow-lg">
-      <h1 className="text-2xl font-semibold ">Add New Customer</h1>
+    <div className="mt-20 p-3 max-w-xl mx-auto bg-white rounded-md drop-shadow-lg">
+      <h1 className="text-2xl font-semibold ">Create New Customer</h1>
       <hr className="h-px mt-2 mb-3 bg-orange-600 border-b-2 dark:bg-gray-800" />
       <form onSubmit={handleSubmit} autoComplete="off">
         <div className="mt-2">
-          <label
-            htmlFor="name"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Name
-          </label>
-          <input
-            onChange={handleInputChange}
-            type="text"
+          <InputField
+            label="Name"
             name="name"
-            id="name"
-            placeholder="John Doe"
-            value={data.name}
-            required
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
-        </div>
-        <div className="mt-2">
-          <label
-            htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Email ID
-          </label>
-          <input
-            onChange={handleInputChange}
-            type="email"
-            name="email"
-            id="email"
-            placeholder="johndoe@gmail.com"
-            value={data.email}
-            required
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
-        </div>
-        <div className="mt-2">
-          <label
-            htmlFor="referredBy"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Referred By
-          </label>
-          <input
-            onChange={handleInputChange}
             type="text"
-            name="referredBy"
-            id="referredBy"
-            placeholder="Referral ID"
-            value={data.referredBy}
+            placeholder="John Doe"
             required
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            value={data.name}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mt-2">
+          <InputField
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="johndoe@gmail.com"
+            required
+            value={data.email}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mt-2">
+          <InputField
+            label="Phone Number (+91)"
+            name="phone"
+            type="tel"
+            placeholder="99999-99999"
+            required
+            value={data.phone}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mt-2">
+          <InputField
+            label="Referred By"
+            name="referredBy"
+            type="text"
+            placeholder="Referral ID"
+            required
+            value={data.referredBy}
+            onChange={handleInputChange}
           />
         </div>
 
@@ -136,7 +134,7 @@ const CreateCustomer = () => {
             htmlFor="referredBy"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Referred By
+            Referred By (in development)
           </label>
           <input
             class="flex w-full items-center justify-between rounded bg-white p-2 ring-1 ring-gray-300"
@@ -161,7 +159,7 @@ const CreateCustomer = () => {
 
         <div className="mt-3 text-center">
           <PrimaryButton
-            text="Sign Up"
+            text="Create Customer"
             sx="p-2.5"
             disabled={loading}
             type="submit"
