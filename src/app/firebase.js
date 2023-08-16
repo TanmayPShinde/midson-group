@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBMlwHhw5NiCY_lrSyqkxdKU125CWfNmAc",
@@ -13,4 +13,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-export const getAllCustomers = () => {};
+export const getAllCustomers = async () => {
+  const snapshot = await getDocs(collection(db, "customers"));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+};
