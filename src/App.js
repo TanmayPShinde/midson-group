@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Navbar from "./components/layout/navbar";
 import CreateCustomer from "./pages/createCustomer";
+import CreateGroup from "./pages/createGroup";
 
 function App() {
   return (
@@ -12,10 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<div className="ms-12 mt-16">Home </div>} />
         <Route path="/createCustomer" element={<CreateCustomer />} />
-        <Route
-          path="/createGroup"
-          element={<div className="ms-12 mt-16">New Group </div>}
-        />
+        <Route path="/createGroup" element={<CreateGroup />} />
       </Routes>
       <ToastContainer
         position="bottom-center"

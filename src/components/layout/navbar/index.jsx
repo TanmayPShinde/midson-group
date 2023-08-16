@@ -9,7 +9,7 @@ const navItems = [
 
 const Navbar = () => {
   return (
-    <nav className="bg-slate-700 fixed top-0 w-full z-10 shadow-xl">
+    <nav className="bg-slate-700 fixed top-0 w-full z-10 shadow-lg">
       <div className="lg:mx-14 md:mx-12 sm:mx-8 mx-2 max-w-7xl">
         <div className="relative flex h-14 items-center justify-between">
           <Link to="/">

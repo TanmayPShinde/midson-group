@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { toast } from "react-toastify";
 
 import PrimaryButton from "../../components/shared/PrimaryButton";
 import { db } from "../../app/firebase";
 import InputField from "../../components/form/InputField";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
-const CreateCustomer = () => {
+const CreateGroup = () => {
   const [data, setData] = useState({
+    id: "",
     name: "",
-    email: "",
-    phone: "",
-    referredBy: "",
+    no_of_customers: "",
+    group_value: "",
   });
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -28,34 +28,33 @@ const CreateCustomer = () => {
     event.preventDefault();
     setLoading(true);
 
-    const newCustomer = {
+    const newGroup = {
       name: data.name?.trim(),
-      email: data.email?.trim(),
-      phone: data.phone?.trim(),
-      referredBy: data.referredBy,
+      id: data.id?.trim(),
+      no_of_customers: data.no_of_customers?.trim(),
+      group_value: data.group_value?.trim(),
     };
     try {
-      const q = query(
-        collection(db, "customers"),
-        where("email", "==", newCustomer.email)
-      );
-      if ((await getDocs(q)).empty) {
-        const docRef = await addDoc(collection(db, "customers"), newCustomer);
+      const docRef = doc(db, "groups", newGroup.id);
+      if ((await getDoc(docRef)).empty) {
+        const id = newGroup.id;
+        delete newGroup.id;
+        const docSnap = await setDoc(doc(db, "groups", id, newGroup));
 
-        console.log("Document written with ID: ", docRef.id);
-        toast.success("New Customer created!");
+        console.log("Document written with ID: ", docSnap.id);
+        toast.success("New Group created!");
         setData({
           name: "",
-          email: "",
-          phone: "",
-          referredBy: "",
+          id: "",
+          no_of_customers: "",
+          group_value: "",
         });
       } else {
-        console.log("Email already exists");
-        toast.error("Email already exists!");
+        console.log("Group ID already exists");
+        toast.error("Group ID already exists!");
         setData({
           ...data,
-          email: "",
+          id: "",
         });
       }
       setLoading(false);
@@ -68,15 +67,26 @@ const CreateCustomer = () => {
 
   return (
     <div className="mt-20 p-3 max-w-xl mx-auto bg-white rounded-md drop-shadow-lg">
-      <h1 className="text-2xl font-semibold ">Create New Customer</h1>
+      <h1 className="text-2xl font-semibold ">Create New Group</h1>
       <hr className="h-px mt-2 mb-3 bg-orange-600 border-b-2 dark:bg-gray-800" />
       <form onSubmit={handleSubmit} autoComplete="off">
         <div className="mt-2">
+          <div className="mt-2">
+            <InputField
+              label="Group ID"
+              name="id"
+              type="text"
+              placeholder="JD567"
+              required
+              value={data.id}
+              onChange={handleInputChange}
+            />
+          </div>
           <InputField
             label="Name"
             name="name"
             type="text"
-            placeholder="John Doe"
+            placeholder="bombay_group_5"
             required
             value={data.name}
             onChange={handleInputChange}
@@ -84,35 +94,26 @@ const CreateCustomer = () => {
         </div>
         <div className="mt-2">
           <InputField
-            label="Email"
-            name="email"
-            type="email"
-            placeholder="johndoe@gmail.com"
-            required
-            value={data.email}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mt-2">
-          <InputField
-            label="Phone Number (+91)"
-            name="phone"
-            type="tel"
-            placeholder="99999-99999"
+            label="No of Customers"
+            name="no_of_customers"
+            type="number"
+            placeholder="5"
             required
             value={data.phone}
             onChange={handleInputChange}
+            onWheel={(e) => e.target.blur()}
           />
         </div>
         <div className="mt-2">
           <InputField
-            label="Referred By"
-            name="referredBy"
-            type="text"
-            placeholder="Referral ID"
+            label="Group Value (₹)"
+            name="group_value"
+            type="number"
+            placeholder="5000"
             required
             value={data.referredBy}
             onChange={handleInputChange}
+            onWheel={(e) => e.target.blur()}
           />
         </div>
 
@@ -155,7 +156,7 @@ const CreateCustomer = () => {
 
         <div className="mt-3 text-center">
           <PrimaryButton
-            text="Create Customer"
+            text="Create Group"
             sx="p-2.5"
             disabled={loading}
             type="submit"
@@ -166,4 +167,4 @@ const CreateCustomer = () => {
   );
 };
 
-export default CreateCustomer;
+export default CreateGroup;
