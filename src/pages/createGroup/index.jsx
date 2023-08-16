@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 import PrimaryButton from "../../components/shared/PrimaryButton";
-import { db } from "../../app/firebase";
+import { db, getAllCustomers } from "../../app/firebase";
 import InputField from "../../components/form/InputField";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -23,6 +23,12 @@ const CreateGroup = () => {
       return { ...prev, [name]: value };
     });
   };
+
+  let allCustomers;
+  getAllCustomers().then((data) => {
+    allCustomers = data;
+  });
+  console.log(allCustomers);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
