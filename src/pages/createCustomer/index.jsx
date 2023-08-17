@@ -13,7 +13,7 @@ const CreateCustomer = () => {
     name: "",
     email: "",
     phone: "",
-    referredBy: "",
+    referred_by: "",
   });
   const [options, setOptions] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ const CreateCustomer = () => {
     event.preventDefault();
     setLoading(true);
 
-    if (!data.referredBy) {
+    if (!data.referred_by) {
       toast.error("Referred By is required!");
       return;
     }
@@ -39,7 +39,7 @@ const CreateCustomer = () => {
       name: data.name?.trim(),
       email: data.email?.trim(),
       phone: data.phone?.trim(),
-      referredBy: data.referredBy,
+      referred_by: data.referred_by,
     };
     try {
       const q = query(
@@ -55,7 +55,7 @@ const CreateCustomer = () => {
           name: "",
           email: "",
           phone: "",
-          referredBy: "",
+          referred_by: "",
         });
       } else {
         console.log("Email already exists");
@@ -116,9 +116,9 @@ const CreateCustomer = () => {
             Referred By <span className="text-red-500">*</span>
           </label>
           <Select
-            value={data.referredBy}
+            value={data.referred_by}
             onChange={(value) => {
-              setData((prev) => ({ ...prev, referredBy: value ? value : "" }));
+              setData((prev) => ({ ...prev, referred_by: value ? value : "" }));
             }}
             options={options ? options : []}
             isSearchable

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { getAllCustomers } from "../app/firebase";
 
-export default (setOptions) =>
+const useEffectCustomerOptions = (setOptions) =>
   useEffect(() => {
     async function fetchData() {
       // Fetch data
@@ -20,4 +20,6 @@ export default (setOptions) =>
 
     // Trigger the fetch
     fetchData();
-  }, []);
+  }, [setOptions]);
+
+export default useEffectCustomerOptions;
