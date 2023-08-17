@@ -5,6 +5,8 @@ import PrimaryButton from "../../components/shared/PrimaryButton";
 import { db, getAllCustomers } from "../../app/firebase";
 import InputField from "../../components/form/InputField";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import Select from "react-tailwindcss-select";
+import useEffectCustomerOptions from "../../hooks/useEffectCustomerOptions";
 
 const CreateGroup = () => {
   const [data, setData] = useState({
@@ -12,10 +14,13 @@ const CreateGroup = () => {
     name: "",
     no_of_customers: "",
     group_value: "",
+    memberships: [],
   });
-  const [showDropdown, setShowDropdown] = useState(false);
-
   const [loading, setLoading] = useState(false);
+  const [options, setOptions] = useState(null);
+  // const [selectValue, setSelectValue] = useState([]);
+
+  useEffectCustomerOptions(setOptions);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -23,12 +28,6 @@ const CreateGroup = () => {
       return { ...prev, [name]: value };
     });
   };
-
-  let allCustomers;
-  getAllCustomers().then((data) => {
-    allCustomers = data;
-  });
-  console.log(allCustomers);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,28 +38,28 @@ const CreateGroup = () => {
       id: data.id?.trim(),
       no_of_customers: data.no_of_customers?.trim(),
       group_value: data.group_value?.trim(),
+      memberships: data.memberships.map((mem) => ({ customer_id: mem.value })),
     };
     try {
       const docRef = doc(db, "groups", newGroup.id);
-      if ((await getDoc(docRef)).empty) {
+      if ((await getDoc(docRef)).exists()) {
+        console.log("Group ID already exists");
+        toast.error("Group ID already exists!");
+        setData({
+          ...data,
+          id: "",
+        });
+      } else {
         const id = newGroup.id;
         delete newGroup.id;
-        const docSnap = await setDoc(doc(db, "groups", id, newGroup));
+        await setDoc(doc(db, "groups", id), newGroup);
 
-        console.log("Document written with ID: ", docSnap.id);
         toast.success("New Group created!");
         setData({
           name: "",
           id: "",
           no_of_customers: "",
           group_value: "",
-        });
-      } else {
-        console.log("Group ID already exists");
-        toast.error("Group ID already exists!");
-        setData({
-          ...data,
-          id: "",
         });
       }
       setLoading(false);
@@ -105,7 +104,7 @@ const CreateGroup = () => {
             type="number"
             placeholder="5"
             required
-            value={data.phone}
+            value={data.no_of_customers}
             onChange={handleInputChange}
             onWheel={(e) => e.target.blur()}
           />
@@ -117,47 +116,43 @@ const CreateGroup = () => {
             type="number"
             placeholder="5000"
             required
-            value={data.referredBy}
+            value={data.group_value}
             onChange={handleInputChange}
             onWheel={(e) => e.target.blur()}
           />
         </div>
-
-        <div
-          x-data="select"
-          class="mt-2 relative"
-          onFocus={() => {
-            setShowDropdown(true);
-          }}
-          onBlur={() => {
-            setShowDropdown(false);
-          }}
-        >
-          <label
-            htmlFor="referredBy"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Referred By (in development)
+        <div className="mt-2">
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Add Memberships <span className="text-red-500">*</span>
           </label>
-          <input
-            class="flex w-full items-center justify-between rounded bg-white p-2 ring-1 ring-gray-300"
-            readOnly="readonly"
-          ></input>
-          <ul
-            class="z-2 absolute mt-1 w-full rounded bg-gray-50 ring-1 ring-gray-300"
-            x-show="open"
-            style={{ display: showDropdown ? "block" : "none" }}
-          >
-            <li class="cursor-pointer select-none p-2 hover:bg-gray-200">
-              User 1
-            </li>
-            <li class="cursor-pointer select-none p-2 hover:bg-gray-200">
-              User 2
-            </li>
-            <li class="cursor-pointer select-none p-2 hover:bg-gray-200">
-              User 3
-            </li>
-          </ul>
+          <Select
+            value={data.memberships}
+            onChange={(value) => {
+              if (value?.length <= data.no_of_customers || !value)
+                setData((prev) => ({
+                  ...prev,
+                  memberships: value ? value : [],
+                }));
+              else {
+                toast.error(
+                  data.no_of_customers === ""
+                    ? "Please add No of customers first!"
+                    : `You have already added ${data.no_of_customers} customer/s`
+                );
+              }
+              // setSelectValue(
+              //   value?.map((selectedOption) => ({
+              //     label: selectedOption.label,
+              //   }))
+              // );
+            }}
+            options={options ? options : []}
+            isSearchable
+            isClearable
+            loading={!options}
+            primaryColor="green"
+            isMultiple={true}
+          />
         </div>
 
         <div className="mt-3 text-center">
