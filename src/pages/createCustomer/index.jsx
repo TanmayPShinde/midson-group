@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import PrimaryButton from "../../components/shared/PrimaryButton";
 import { db } from "../../app/firebase";
 import InputField from "../../components/form/InputField";
+import Select from "react-tailwindcss-select";
+import useEffectCustomerOptions from "../../hooks/useEffectCustomerOptions";
 
 const CreateCustomer = () => {
   const [data, setData] = useState({
@@ -13,9 +15,10 @@ const CreateCustomer = () => {
     phone: "",
     referredBy: "",
   });
-  const [showDropdown, setShowDropdown] = useState(false);
-
+  const [options, setOptions] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useEffectCustomerOptions(setOptions);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +31,10 @@ const CreateCustomer = () => {
     event.preventDefault();
     setLoading(true);
 
+    if (!data.referredBy) {
+      toast.error("Referred By is required!");
+      return;
+    }
     const newCustomer = {
       name: data.name?.trim(),
       email: data.email?.trim(),
@@ -105,52 +112,20 @@ const CreateCustomer = () => {
           />
         </div>
         <div className="mt-2">
-          <InputField
-            label="Referred By"
-            name="referredBy"
-            type="text"
-            placeholder="Referral ID"
-            required
-            value={data.referredBy}
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <div
-          x-data="select"
-          class="mt-2 relative"
-          onFocus={() => {
-            setShowDropdown(true);
-          }}
-          onBlur={() => {
-            setShowDropdown(false);
-          }}
-        >
-          <label
-            htmlFor="referredBy"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Referred By (in development)
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Referred By <span className="text-red-500">*</span>
           </label>
-          <input
-            class="flex w-full items-center justify-between rounded bg-white p-2 ring-1 ring-gray-300"
-            readOnly="readonly"
-          ></input>
-          <ul
-            class="z-2 absolute mt-1 w-full rounded bg-gray-50 ring-1 ring-gray-300"
-            x-show="open"
-            style={{ display: showDropdown ? "block" : "none" }}
-          >
-            <li class="cursor-pointer select-none p-2 hover:bg-gray-200">
-              User 1
-            </li>
-            <li class="cursor-pointer select-none p-2 hover:bg-gray-200">
-              User 2
-            </li>
-            <li class="cursor-pointer select-none p-2 hover:bg-gray-200">
-              User 3
-            </li>
-          </ul>
+          <Select
+            value={data.referredBy}
+            onChange={(value) => {
+              setData((prev) => ({ ...prev, referredBy: value ? value : "" }));
+            }}
+            options={options ? options : []}
+            isSearchable
+            isClearable
+            loading={!options}
+            primaryColor="green"
+          />
         </div>
 
         <div className="mt-3 text-center">
