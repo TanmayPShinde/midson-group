@@ -17,3 +17,8 @@ export const getAllCustomers = async () => {
   const snapshot = await getDocs(collection(db, "customers"));
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
+
+export const getAllGroups = async () => {
+  const snapshot = await getDocs(collection(db, "groups"));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+};
