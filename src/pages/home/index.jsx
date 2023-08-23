@@ -10,6 +10,7 @@ const Home = () => {
       // Fetch data
       const allCustomers = await getAllCustomers();
       const allGroups = await getAllGroups();
+      console.log(allCustomers, allGroups);
 
       // Update the states
       setAllCustomers(allCustomers);
@@ -21,8 +22,11 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex mt-20 mx-14 " style={{ height: "85vh" }}>
-      <div className="p-3 flex-grow me-3 bg-white rounded-md drop-shadow-lg">
+    <div
+      className="flex mt-20 mx-6 lg:mx-32  gap-8 flex-wrap"
+      style={{ height: "85vh" }}
+    >
+      <div className="p-3 flex-grow bg-white rounded-md drop-shadow-lg">
         <h1 className="text-xl font-semibold ">Groups</h1>
         <hr className="h-px my-2 bg-gray-600 border-b-2 "></hr>
         <div className="overflow-y-auto" style={{ height: "90%" }}>
@@ -51,7 +55,7 @@ const Home = () => {
           )}
         </div>
       </div>
-      <div className=" p-3 flex-grow ms-3 bg-white rounded-md drop-shadow-lg">
+      <div className=" p-3 flex-grow bg-white rounded-md drop-shadow-lg">
         <h1 className="text-xl font-semibold ">Customers</h1>
         <hr className="h-px my-2 bg-gray-600 border-b-2 "></hr>
         <div className="overflow-y-auto" style={{ height: "90%" }}>
@@ -65,7 +69,16 @@ const Home = () => {
                   </div>
                   <div className="flex justify-between mt-1">
                     <span className="text-sm text-slate-700">
-                      referral: {customer.referred_by}
+                      {customer.referred_by ? (
+                        <>
+                          referred by:{" "}
+                          {customer.referred_by.name
+                            ? customer.referred_by.name
+                            : customer.referred_by}
+                        </>
+                      ) : (
+                        ""
+                      )}
                     </span>
                     <span className="text-slate-700 text-sm">
                       +91 {customer.phone}

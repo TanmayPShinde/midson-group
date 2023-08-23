@@ -7,7 +7,7 @@ const NavItem = ({ name, path }) => {
   return (
     <Link to={path}>
       <span
-        className={`text-sm p-2 rounded-md text-white hover:bg-gray-600 me-2 ${
+        className={`text-sm p-2 rounded-md text-white hover:bg-gray-600 me-4 ${
           pathname === path ? "bg-gray-600" : ""
         }`}
       >

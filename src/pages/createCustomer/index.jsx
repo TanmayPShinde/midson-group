@@ -31,15 +31,13 @@ const CreateCustomer = () => {
     event.preventDefault();
     setLoading(true);
 
-    if (!data.referred_by) {
-      toast.error("Referred By is required!");
-      return;
-    }
     const newCustomer = {
       name: data.name?.trim(),
       email: data.email?.trim(),
       phone: data.phone?.trim(),
-      referred_by: data.referred_by,
+      referred_by: data.referred_by.value
+        ? { name: data.referred_by.label, id: data.referred_by.value }
+        : data.referred_by,
     };
     try {
       const q = query(
@@ -74,7 +72,7 @@ const CreateCustomer = () => {
   };
 
   return (
-    <div className="mt-20 p-3 max-w-xl mx-auto bg-white rounded-md drop-shadow-lg">
+    <div className="mt-20 mx-auto p-4 max-w-xl bg-white rounded-md drop-shadow-lg">
       <h1 className="text-2xl font-semibold ">Create New Customer</h1>
       <hr className="h-px mt-2 mb-3 bg-orange-600 border-b-2 dark:bg-gray-800" />
       <form onSubmit={handleSubmit} autoComplete="off">
@@ -113,7 +111,7 @@ const CreateCustomer = () => {
         </div>
         <div className="mt-2">
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Referred By <span className="text-red-500">*</span>
+            Referred By
           </label>
           <Select
             value={data.referred_by}

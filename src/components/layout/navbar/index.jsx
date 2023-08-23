@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import NavItem from "./NavItem";
+import { AiFillHome } from "react-icons/ai";
+import { FaUserPlus, FaUsers } from "react-icons/fa";
 
 const navItems = [
-  { name: "Home", path: "/" },
-  { name: "New Customer", path: "/createCustomer" },
-  { name: "New Group", path: "/createGroup" },
+  { name: <AiFillHome className="inline text-lg" />, path: "/" },
+  { name: <FaUserPlus className="inline text-lg" />, path: "/createCustomer" },
+  { name: <FaUsers className="inline text-lg" />, path: "/createGroup" },
 ];
 
 const Navbar = () => {
